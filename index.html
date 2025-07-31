@@ -658,58 +658,105 @@
     }
 
     function mostrarTabla() {
-      const lista = Object.entries(referencia).sort((a, b) => b[1].promedio - a[1].promedio);
+  // Convertir el objeto a un array y ordenarlo
+  const lista = Object.entries(referencia).sort((a, b) => b[1].promedio - a[1].promedio);
 
-      let tablaHTML = `
-        <h3 style="color: var(--primary-color); text-align: center; margin-bottom: 20px;">Tabla de Haberes Estimados</h3>
-        <table class="result-table">
-          <thead>
-            <tr>
-              <th>Grado</th>
-              <th>Años (ECG)</th>
-              <th style="text-align: right;">Haber Neto</th>
-              <th style="text-align: right;">Haber Neto Universitario</th>
-            </tr>
-          </thead>
-          <tbody>
-      `;
-
-      lista.forEach(([grado, datos]) => {
-        let badgeClass = "";
-        switch(datos.jerarquia) {
-          case "Oficial": badgeClass = "badge-official"; break;
-          case "Suboficial": badgeClass = "badge-suboficial"; break;
-          case "Aspirante": badgeClass = "badge-aspirante"; break;
-        }
-
-        tablaHTML += `
+  let tablaHTML = `
+    <h3 style="color: var(--primary-color); text-align: center; margin-bottom: 20px;">Tabla de Haberes Estimados</h3>
+    
+    <div style="overflow-x: auto;">
+      <table class="result-table" style="min-width: 600px;">
+        <thead>
           <tr>
-            <td>${grado} <span class="badge ${badgeClass}">${datos.jerarquia}</span></td>
-            <td>${datos.años}</td>
-            <td style="text-align: right;">$${datos.promedio.toLocaleString("es-AR", {minimumFractionDigits: 2})}</td>
-            <td style="text-align: right;">$${datos.promuni.toLocaleString("es-AR", {minimumFractionDigits: 2})}</td>
+            <th>Grado</th>
+            <th>Años (ECG)</th>
+            <th style="text-align: right;">Haber Neto</th>
+            <th style="text-align: right;">Haber Neto Univ.</th>
           </tr>
-        `;
-      });
+        </thead>
+        <tbody>
+  `;
 
-      tablaHTML += `
-          </tbody>
-        </table>
-
-        <div class="note-box" style="margin-top: 20px;">
-          <h4>Fórmulas de Cálculo:</h4>
-          <ul>
-            <li><strong>Haber neto</strong> = Haber mensual + Suplemento por antigüedad (años ECG) - Casino - Aporte jubilatorio - Aporte obra social (carga 1-2)</li>
-            <li><strong>Haber neto universitario</strong> = Haber neto + Bonificación por título universitario</li>
-          </ul>
-        </div>
-      `;
-
-      const tablaDiv = document.getElementById("tablaReferencias");
-      tablaDiv.innerHTML = tablaHTML;
-      tablaDiv.style.display = "block";
-      document.getElementById("resultado").style.display = "none";
+  lista.forEach(([grado, datos]) => {
+    // Establecer el color de fondo según la jerarquía
+    let rowStyle = "";
+    switch (datos.jerarquia) {
+      case "Oficial":
+        rowStyle = "background-color: #fff9c4;"; // Amarillo claro
+        break;
+      case "Suboficial":
+        rowStyle = "background-color: #e0e0e0;"; // Gris claro
+        break;
+      case "Aspirante":
+        rowStyle = "background-color: #ffffff;"; // Blanco
+        break;
+      default:
+        rowStyle = "background-color: #ffffff;";
     }
+
+    tablaHTML += `
+      <tr style="${rowStyle}">
+        <td>${grado}</td>
+        <td>${datos.años}</td>        
+        <td style="text-align: right;">$${datos.promedio.toLocaleString("es-AR", {minimumFractionDigits: 2})}</td>
+        <td style="text-align: right;">$${datos.promuni.toLocaleString("es-AR", {minimumFractionDigits: 2})}</td>
+      </tr>
+    `;
+  });
+
+  tablaHTML += `
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note-box" style="margin-top: 20px;">
+      <h4>Fórmulas de Cálculo:</h4>
+      <ul>
+        <li><strong>Haber neto</strong> = Haber mensual + Suplemento por antigüedad (años ECG) - Casino - Aporte jubilatorio - Aporte obra social (carga 1-2)</li>
+        <li><strong>Haber neto universitario</strong> = Haber neto + Bonificación por título universitario</li>
+      </ul>
+    </div>
+    
+    <style>
+      @media (max-width: 768px) {
+        .result-table th, .result-table td {
+          padding: 8px 10px;
+          font-size: 14px;
+        }
+        .result-table th:nth-child(3), 
+        .result-table th:nth-child(4),
+        .result-table td:nth-child(3),
+        .result-table td:nth-child(4) {
+          display: none;
+        }
+        .result-table th:nth-child(2)::after {
+          content: "Años";
+        }
+        .result-table th:nth-child(3)::after {
+          content: "Neto";
+        }
+        .result-table th:nth-child(4)::after {
+          content: "Neto Univ.";
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .result-table {
+          font-size: 13px;
+        }
+        .result-table th, .result-table td {
+          padding: 6px 8px;
+        }
+      }
+    </style>
+  `;
+
+  const tablaDiv = document.getElementById("tablaReferencias");
+  tablaDiv.innerHTML = tablaHTML;
+  tablaDiv.style.display = "block";
+  document.getElementById("resultado").style.display = "none";
+}
+
   </script>
 </body>
 </html>
