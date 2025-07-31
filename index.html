@@ -657,41 +657,33 @@
       campoFijacion.style.display = gradosConFijacion.includes(gradoSeleccionado) ? "block" : "none";
     }
 
-    function mostrarTabla() {
-  // Convertir el objeto a un array y ordenarlo
+    <script>
+function mostrarTabla() {
   const lista = Object.entries(referencia).sort((a, b) => b[1].promedio - a[1].promedio);
 
   let tablaHTML = `
     <h3 style="color: var(--primary-color); text-align: center; margin-bottom: 20px;">Tabla de Haberes Estimados</h3>
     
-    <div style="overflow-x: auto;">
-      <table class="result-table" style="min-width: 600px;">
+    <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+      <table class="result-table" style="min-width: 100%;">
         <thead>
           <tr>
-            <th>Grado</th>
-            <th>Años (ECG)</th>
-            <th style="text-align: right;">Haber Neto</th>
-            <th style="text-align: right;">Haber Neto Univ.</th>
+            <th style="min-width: 150px;">Grado</th>
+            <th style="min-width: 80px;">Años (ECG)</th>
+            <th style="min-width: 120px; text-align: right;">Haber Neto</th>
+            <th style="min-width: 150px; text-align: right;">Haber Neto Univ.</th>
           </tr>
         </thead>
         <tbody>
   `;
 
   lista.forEach(([grado, datos]) => {
-    // Establecer el color de fondo según la jerarquía
     let rowStyle = "";
     switch (datos.jerarquia) {
-      case "Oficial":
-        rowStyle = "background-color: #fff9c4;"; // Amarillo claro
-        break;
-      case "Suboficial":
-        rowStyle = "background-color: #e0e0e0;"; // Gris claro
-        break;
-      case "Aspirante":
-        rowStyle = "background-color: #ffffff;"; // Blanco
-        break;
-      default:
-        rowStyle = "background-color: #ffffff;";
+      case "Oficial": rowStyle = "background-color: #fff9c4;"; break;
+      case "Suboficial": rowStyle = "background-color: #e0e0e0;"; break;
+      case "Aspirante": rowStyle = "background-color: #ffffff;"; break;
+      default: rowStyle = "background-color: #ffffff;";
     }
 
     tablaHTML += `
@@ -719,33 +711,19 @@
     
     <style>
       @media (max-width: 768px) {
-        .result-table th, .result-table td {
-          padding: 8px 10px;
+        .result-table {
+          white-space: nowrap;
+        }
+        .result-table th, 
+        .result-table td {
+          padding: 10px 12px;
           font-size: 14px;
         }
-        .result-table th:nth-child(3), 
-        .result-table th:nth-child(4),
-        .result-table td:nth-child(3),
-        .result-table td:nth-child(4) {
-          display: none;
-        }
-        .result-table th:nth-child(2)::after {
-          content: "Años";
-        }
-        .result-table th:nth-child(3)::after {
-          content: "Neto";
-        }
-        .result-table th:nth-child(4)::after {
-          content: "Neto Univ.";
-        }
-      }
-      
-      @media (max-width: 480px) {
-        .result-table {
-          font-size: 13px;
-        }
-        .result-table th, .result-table td {
-          padding: 6px 8px;
+        .result-table th {
+          position: sticky;
+          top: 0;
+          background-color: var(--primary-color);
+          color: white;
         }
       }
     </style>
@@ -756,7 +734,7 @@
   tablaDiv.style.display = "block";
   document.getElementById("resultado").style.display = "none";
 }
-
+    
   </script>
 </body>
 </html>
