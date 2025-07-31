@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora de Haberes SPF</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --accent-color: #e74c3c;
+      --light-color: #ecf0f1;
+      --dark-color: #2c3e50;
+      --success-color: #27ae60;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f5f7fa;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 25px;
+      margin-bottom: 25px;
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 2px solid var(--light-color);
+      padding-bottom: 20px;
+    }
+
+    .header h2 {
+      color: var(--primary-color);
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+
+    .header p {
+      color: #7f8c8d;
+      font-size: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--dark-color);
+    }
+
+    select, input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      margin-bottom: 15px;
+      font-size: 16px;
+      transition: var(--transition);
+      background-color: white;
+    }
+
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: var(--secondary-color);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+      transition: var(--transition);
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background-color: var(--primary-color);
+    }
+
+    .btn-secondary:hover {
+      background-color: #1a252f;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 15px;
+      box-shadow: var(--box-shadow);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+
+    .result-table th {
+      background-color: var(--primary-color);
+      color: white;
+      text-align: left;
+      padding: 15px;
+      font-weight: 600;
+    }
+
+    .result-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .result-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .result-table tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    .result-table tr.total-row {
+      background-color: rgba(52, 152, 219, 0.1);
+      font-weight: bold;
+    }
+
+    .result-table .total-amount {
+      color: var(--secondary-color);
+      font-size: 18px;
+    }
+
+    .note-box {
+      background-color: #f8f9fa;
+      border-left: 4px solid var(--secondary-color);
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    }
+
+    .note-box h4 {
+      margin-top: 0;
+      color: var(--primary-color);
+    }
+
+    .update-info {
+      font-size: 14px;
+      color: #7f8c8d;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .update-info a {
+      color: var(--secondary-color);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .update-info a:hover {
+      text-decoration: underline;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+
+    .badge-official {
+      background-color: #f39c12;
+      color: white;
+    }
+
+    .badge-suboficial {
+      background-color: #7f8c8d;
+      color: white;
+    }
+
+    .badge-aspirante {
+      background-color: #3498db;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+      
+      .header h2 {
+        font-size: 24px;
+      }
+      
+      select, input, .btn {
+        padding: 10px;
+      }
+      
+      .result-table td, .result-table th {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card header">
+      <h2>Calculadora de Haberes SPF</h2>
+      <p>Complete los datos para estimar su haber mensual según su situación</p>
+      <p class="update-info">Última actualización: <a href="https://www.boletinoficial.gob.ar/detalleAviso/primera/324836/20250506" target="_blank">RESOL-2025-520-APN-MSG</a></p>
+    </div>
+
+    <div class="card">
+      <form id="calculadoraForm">
+        <label for="grado">Grado:</label>
+        <select id="grado" name="grado" onchange="verificarFijacion()">
+          <option value="SUBAYUDANTE">SUBAYUDANTE</option>
+          <option value="AYUDANTE DE QUINTA">AYUDANTE DE QUINTA</option>
+          <option value="AYUDANTE DE CUARTA">AYUDANTE DE CUARTA</option>
+          <option value="AYUDANTE DE TERCERA">AYUDANTE DE TERCERA</option>
+          <option value="AYUDANTE DE SEGUNDA">AYUDANTE DE SEGUNDA</option>
+          <option value="AYUDANTE DE PRIMERA">AYUDANTE DE PRIMERA</option>
+          <option value="AYUDANTE PRINCIPAL">AYUDANTE PRINCIPAL</option>
+          <option value="AYUDANTE MAYOR">AYUDANTE MAYOR</option>
+          <option value="SUBADJUTOR">SUBADJUTOR</option>
+          <option value="ADJUTOR">ADJUTOR</option>
+          <option value="ADJUTOR PRINCIPAL">ADJUTOR PRINCIPAL</option>
+          <option value="SUBALCAIDE">SUBALCAIDE</option>
+          <option value="ALCAIDE">ALCAIDE</option>
+          <option value="ALCAIDE MAYOR">ALCAIDE MAYOR</option>
+          <option value="SUBPREFECTO">SUBPREFECTO</option>
+          <option value="PREFECTO">PREFECTO</option>
+          <option value="INSPECTOR GENERAL">INSPECTOR GENERAL</option>
+          <option value="CADETE DE SEGUNDO AÑO">CADETE DE SEGUNDO AÑO</option>
+          <option value="CADETE DE TERCER AÑO">CADETE DE TERCER AÑO</option>
+        </select>
+
+        <label for="antiguedad">Años de servicio:</label>
+        <input type="number" id="antiguedad" min="0" max="50" value="0">
+
+        <label for="titulo">Título:</label>
+        <select id="titulo">
+          <option value="ninguno">Ninguno</option>
+          <option value="terciario">Terciario</option>
+          <option value="universitario">Universitario</option>
+        </select>
+
+        <label for="variabilidad">¿Variabilidad?</label>
+        <select id="variabilidad">
+          <option value="ninguna">Ninguna</option>
+          <option value="unico">Residente único</option>
+          <option value="familia">Residente con familia</option>
+        </select>
+
+        <div id="fijacionCampo" style="display: none;">
+          <label for="fijacion">Fijación de domicilio:</label>
+          <select id="fijacion">
+            <option value="no">No</option>
+            <option value="si">Sí</option>
+          </select>
+        </div>
+
+        <label for="zona">¿Zona Sur?</label>
+        <select id="zona">
+          <option value="no">No</option>
+          <option value="si">Sí</option>
+        </select>
+
+        <label for="casino">¿Casino?</label>
+        <select id="casino">
+          <option value="si">Sí</option>
+          <option value="no">No</option>
+        </select>
+
+        <label for="obra">Obra social:</label>
+        <select id="obra">
+          <option value="basica">Básica</option>
+          <option value="carga">Con carga de familia (1 o 2)</option>
+          <option value="mascarga">Con carga de familia (3 o +)</option>
+        </select>
+
+        <button type="button" class="btn" onclick="calcular()">Calcular Haber</button>
+        <button type="button" class="btn btn-secondary" onclick="mostrarTabla()">Ver Tabla de Haberes</button>
+      </form>
+    </div>
+
+    <div class="card" id="resultado" style="display: none;"></div>
+    <div class="card" id="tablaReferencias" style="display: none;"></div>
+  </div>
+
+  <script>
+    // Tabla de referencia
+    const referencia = {
+      "INSPECTOR GENERAL": {
+        jerarquia: "Oficial",
+        haber: 2916371.18,
+        titulo: { terciario: 437455.68, universitario: 729092.79 },
+        variabilidad: { unico: 107730.98, familia: 145204.4 },
+        fijacion: 187326.3,
+        zona: 0,
+        casino: 12349.51,
+        promedio: 3843042.65,
+        promuni: 4572135.44,
+        años: 30
+      },
+      // ... (resto de los datos de referencia)
+    };
+
+    function calcular() {
+      const grado = document.getElementById("grado").value;
+      const antiguedad = parseInt(document.getElementById("antiguedad").value);
+      const titulo = document.getElementById("titulo").value;
+      const variabilidad = document.getElementById("variabilidad").value;
+      const fijacion = document.getElementById("fijacion").value === "si";
+      const zona = document.getElementById("zona").value === "si";
+      const usaCasino = document.getElementById("casino").value === "si";
+      const obra = document.getElementById("obra").value;
+      
+      const ref = referencia[grado];
+
+      const casinoMonto = ref.casino;
+      const haber = ref.haber;
+      const suplemento = haber * 0.02 * antiguedad;
+      const bonificacionTitulo = ref.titulo[titulo] || 0;
+      const Aportes = haber + suplemento + bonificacionTitulo;
+      
+      const adicionalFijacion = fijacion ? ref.fijacion : 0;
+      const adicionalVariabilidad = variabilidad !== "ninguna" ? ref.variabilidad[variabilidad] : 0;
+      const adicionalZona = zona ? ref.zona : 0;
+      const adicionalCasino = usaCasino ? -casinoMonto : 0;
+      
+      const aporteLey13018 = -Aportes * 0.10;
+      const aporteObra = obra === "carga" ? -Aportes * 0.085 : obra === "mascarga" ? -Aportes * 0.095 : -Aportes * 0.075;
+
+      const total = haber + suplemento + bonificacionTitulo + adicionalVariabilidad +
+                    adicionalFijacion + adicionalZona + adicionalCasino + aporteLey13018 + aporteObra;
+
+      document.getElementById("resultado").innerHTML = `
+        <h3 style="color: var(--primary-color); text-align: center; margin-bottom: 20px;">Resultado del Cálculo</h3>
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Concepto</th>
+              <th style="text-align: right;">Importe</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Haber mensual base</strong></td>
+              <td style="text-align: right;">$${haber.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td><strong>Suplemento por antigüedad (${antiguedad} años)</strong></td>
+              <td style="text-align: right;">$${suplemento.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td><strong>Bonificación por título</strong></td>
+              <td style="text-align: right;">$${bonificacionTitulo.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td><strong>Adicional por variabilidad</strong></td>
+              <td style="text-align: right;">$${adicionalVariabilidad.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td><strong>Fijación de domicilio</strong></td>
+              <td style="text-align: right;">$${adicionalFijacion.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td><strong>Zona Sur</strong></td>
+              <td style="text-align: right;">$${adicionalZona.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td><strong>Casino</strong></td>
+              <td style="text-align: right;">$${adicionalCasino.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td><strong>Aporte Ley 13.018 (10%)</strong></td>
+              <td style="text-align: right;">$${aporteLey13018.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td><strong>Aporte Obra Social</strong></td>
+              <td style="text-align: right;">$${aporteObra.toFixed(2)}</td>
+            </tr>
+            <tr class="total-row">
+              <td><strong style="font-size: 16px;">TOTAL ESTIMADO</strong></td>
+              <td style="text-align: right;" class="total-amount">$${total.toFixed(2)}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="note-box">
+          <h4>Aclaración:</h4>
+          <p>El resultado es estimativo y no contempla los siguientes rubros:</p>
+          <ul>
+            <li>SUMA FIJA DCTO. 56/2020</li>
+            <li>SUB. POR FALLECIMIENTO</li>
+            <li>SEGURO OBLIGATORIO (C.N.A.S.)</li>
+            <li>ASIST. VARIAS (D.O.S.)</li>
+          </ul>
+        </div>
+      `;
+      document.getElementById("resultado").style.display = "block";
+    }
+
+    function verificarFijacion() {
+      const gradosConFijacion = [
+        "INSPECTOR GENERAL", "PREFECTO", "SUBPREFECTO", 
+        "ALCAIDE MAYOR", "ALCAIDE", "SUBALCAIDE"
+      ];
+      
+      const gradoSeleccionado = document.getElementById("grado").value;
+      const campoFijacion = document.getElementById("fijacionCampo");
+
+      campoFijacion.style.display = gradosConFijacion.includes(gradoSeleccionado) ? "block" : "none";
+    }
+
+    function mostrarTabla() {
+      const lista = Object.entries(referencia).sort((a, b) => b[1].promedio - a[1].promedio);
+
+      let tablaHTML = `
+        <h3 style="color: var(--primary-color); text-align: center; margin-bottom: 20px;">Tabla de Haberes Estimados</h3>
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Grado</th>
+              <th>Años (ECG)</th>
+              <th style="text-align: right;">Haber Neto</th>
+              <th style="text-align: right;">Haber Neto Universitario</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      lista.forEach(([grado, datos]) => {
+        let badgeClass = "";
+        switch(datos.jerarquia) {
+          case "Oficial": badgeClass = "badge-official"; break;
+          case "Suboficial": badgeClass = "badge-suboficial"; break;
+          case "Aspirante": badgeClass = "badge-aspirante"; break;
+        }
+
+        tablaHTML += `
+          <tr>
+            <td>${grado} <span class="badge ${badgeClass}">${datos.jerarquia}</span></td>
+            <td>${datos.años}</td>
+            <td style="text-align: right;">$${datos.promedio.toLocaleString("es-AR", {minimumFractionDigits: 2})}</td>
+            <td style="text-align: right;">$${datos.promuni.toLocaleString("es-AR", {minimumFractionDigits: 2})}</td>
+          </tr>
+        `;
+      });
+
+      tablaHTML += `
+          </tbody>
+        </table>
+
+        <div class="note-box" style="margin-top: 20px;">
+          <h4>Fórmulas de Cálculo:</h4>
+          <ul>
+            <li><strong>Haber neto</strong> = Haber mensual + Suplemento por antigüedad (años ECG) - Casino - Aporte jubilatorio - Aporte obra social (carga 1-2)</li>
+            <li><strong>Haber neto universitario</strong> = Haber neto + Bonificación por título universitario</li>
+          </ul>
+        </div>
+      `;
+
+      const tablaDiv = document.getElementById("tablaReferencias");
+      tablaDiv.innerHTML = tablaHTML;
+      tablaDiv.style.display = "block";
+      document.getElementById("resultado").style.display = "none";
+    }
+  </script>
+</body>
+</html>
